@@ -3,8 +3,6 @@ package assign07;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -17,58 +15,18 @@ import java.util.Scanner;
  */
 public class GraphUtility {
 
-	/**
-	 * This method must use the depth-first search algorithm presented in 
-	 * lecture to determine whether the graph contains a cycle.
-	 * @param sources
-	 * @param destinations
-	 * @return
-	 * @throws IllegalArgumentException
-	 */
 	public static <Type> boolean isCyclic(List<Type> sources, List<Type> destinations) throws IllegalArgumentException {
 		// FILL IN + ADD METHOD COMMENT
 		return false;
 	}
 
-	/**
-	 * This method must use the breath-first search algorithm presented in lecture to determine 
-	 * whether there is a path from the vertex with srcData to the vertex with dstData in the graph.  
-	 * Throws an IllegalArgumentException if there does not exist a vertex in the graph with srcData, and likewise for dstData.
-	 * @param sources
-	 * @param destinations
-	 * @param srcData
-	 * @param dstData
-	 * @return
-	 * @throws IllegalArgumentException
-	 */
 	public static <Type> boolean areConnected(List<Type> sources, List<Type> destinations, Type srcData, Type dstData)
 			throws IllegalArgumentException {
-		
-		if (sources.size() != destinations.size())
-		{
-			throw new IllegalArgumentException (); 
-		}
 		// FILL IN + ADD METHOD COMMENT
 		return false;
 	}
-	
-	/** This method must use the topographical sort algorithm presented in lecture to generate a sorted
-	 *  ordering of the vertices in the graph.  Note that a graph may have more than one valid ordering, 
-	 *  and any such ordering is accepted.  Throws an IllegalArgumentException if the graph contains a cycle 
-	 *  (recall topological sort works only on acyclic graphs).
-	 * @param sources
-	 * @param destinations
-	 * @return
-	 * @throws IllegalArgumentException
-	 */
 
 	public static <Type> List<Type> sort(List<Type> sources, List<Type> destinations) throws IllegalArgumentException {
-		
-		if (isCyclic(sources, destinations) == true)
-		{
-			throw new IllegalArgumentException (); 
-		}
-		
 		// FILL IN + ADD METHOD COMMENT
 		return null;
 	}
@@ -159,7 +117,4 @@ public class GraphUtility {
 
 		scan.close();
 	}
-
-
-
 }

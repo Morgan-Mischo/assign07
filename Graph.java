@@ -38,6 +38,8 @@ public class Graph <Type>{
 			 vertex2 = new Vertex(type2); 
 			 vertices.put(type2, vertex2); 
 		 }
+		 
+		 vertex1.addEdge(vertex2);
 	}
 	
 	public String generateDot()
@@ -49,7 +51,7 @@ public class Graph <Type>{
 			Iterator<Edge> edges = v.edges(); 
 			while(edges.hasNext())
 			{
-				dot.append("\t\"" + v.getData() + "\" -> \"" + edges.next() + "\"\n" ); 
+				dot.append("\t\"" + v.getData() + "\" -> \"" + edges.next().getData() + "\"\n" ); 
 			}
 		}
 		return dot.toString() + "}"; 
@@ -61,7 +63,7 @@ public class Graph <Type>{
 		
 		for(Vertex v : vertices.values())
 		{
-			result.append(v.data + "\n"); 
+			result.append(v + "\n"); 
 		}
 		
 		return result.toString(); 
@@ -72,6 +74,7 @@ public class Graph <Type>{
 		private Type data; 
 		
 		private LinkedList<Edge> adj; 
+		public double distanceFromStart;
 		
 		public Vertex (Type data)
 		{
@@ -99,7 +102,7 @@ public class Graph <Type>{
 			Iterator<Edge> itr = this.edges(); 
 			while (itr.hasNext())
 			{
-				s += itr.next() + " "; 
+				s += itr.next().getData() + " "; 
 			}
 			return s; 
 		}
@@ -119,7 +122,7 @@ public class Graph <Type>{
 			return this.dst;
 		}
 		
-		public Type data()
+		public Type getData()
 		{
 			return this.dst.getData();
 		}
