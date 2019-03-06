@@ -1,9 +1,12 @@
+
 package assign07;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Scanner;
 
 /**
@@ -16,8 +19,16 @@ import java.util.Scanner;
 public class GraphUtility {
 
 	public static <Type> boolean isCyclic(List<Type> sources, List<Type> destinations) throws IllegalArgumentException {
-		// FILL IN + ADD METHOD COMMENT
-		return false;
+		
+		//Create a graph of sources and destinations
+		Graph <Type> myGraph = new Graph<>(); 
+		Vertex source = (Vertex) sources.get(0); 
+		for(int i = 0; i < sources.size(); i++)
+		{
+			myGraph.addEdge(sources.get(i), destinations.get(i)); 
+		}
+		return Graph.isCyclic(source); 
+		
 	}
 
 	public static <Type> boolean areConnected(List<Type> sources, List<Type> destinations, Type srcData, Type dstData)
@@ -27,8 +38,14 @@ public class GraphUtility {
 	}
 
 	public static <Type> List<Type> sort(List<Type> sources, List<Type> destinations) throws IllegalArgumentException {
-		// FILL IN + ADD METHOD COMMENT
-		return null;
+		Graph <Type> myGraph = new Graph<>(); 
+		for(int i = 0; i <sources.size(); i++)
+		{
+			myGraph.addEdge(sources.get(i), destinations.get(i));
+		}
+		List<Type> result = new ArrayList<Type> (); 
+		result = Graph.topologicalSort(myGraph); 
+		return result; 
 	}
 
 	/**
