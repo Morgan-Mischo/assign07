@@ -1,14 +1,9 @@
-
 package assign07;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.PriorityQueue;
-
-import lab08.Vertex;
+import java.util.Queue;
 
 public class Graph <Type>{
 	
@@ -74,21 +69,49 @@ public class Graph <Type>{
 		
 		return result.toString(); 
 	}
+
+	public boolean areConnected(Type srcData, Type dstData)
+	{
+		Vertex s = vertices.get(srcData);
+		
+		for(Vertex v : vertices.values())
+		{
+			v.distanceFromStart = Double.POSITIVE_INFINITY;
+		}
+			
+		Queue<Vertex> myQueue = new LinkedList<Vertex>();
+		myQueue.offer(s);
+		s.distanceFromStart = 0;
+		
+		while(!myQueue.isEmpty())
+		{
+			Vertex x = myQueue.poll();
+			
+			Iterator<Edge> edges = x.edges();
+			while(edges.hasNext())
+			{
+				Vertex w = edges.next().getDestinationVertex();
+				if(w.distanceFromStart == Double.POSITIVE_INFINITY)
+				{
+					w.distanceFromStart = x.distanceFromStart + 1;
+					w.setPrev(x);
+					myQueue.offer(w);
+				}
+				if(w.getData() == dstData)
+					return true;
+			}
+		}
+		return false;
+	}
 	
 	private class Vertex 
 	{
+		private Vertex prev;
+
 		private Type data; 
 		
 		private LinkedList<Edge> adj; 
 		public double distanceFromStart;
-		//distance
-		private double dist; 
-		
-		private Vertex prev; 
-		
-		private boolean visited; 
-		
-		private double indegree; 
 		
 		public Vertex (Type data)
 		{
@@ -101,6 +124,16 @@ public class Graph <Type>{
 			return data; 
 		}
 		
+		public Vertex getPrev() 
+		{
+			return prev;
+		}
+
+		public void setPrev(Vertex prev) 
+		{
+			this.prev = prev;
+		}
+
 		public void addEdge (Vertex otherVertex)
 		{
 			adj.add(new Edge(otherVertex)); 
@@ -110,6 +143,7 @@ public class Graph <Type>{
 		{
 			return adj.iterator(); 
 		}
+		
 		public String toString ()
 		{
 			String s = "Vertex " + data + " adjacent to vertices "; 
@@ -119,35 +153,6 @@ public class Graph <Type>{
 				s += itr.next().getData() + " "; 
 			}
 			return s; 
-		}
-		public double getDistanceFromStart() {
-			return dist;
-		}
-
-		public void setDistanceFromStart(double dist) {
-			this.dist = dist;
-		}
-		
-		public Vertex getPrevious() {
-			return prev; 
-		}
-		public void setPrevious(Vertex prev) {
-			this.prev = prev; 
-		}
-		
-		public boolean getVisted() {
-			return visited; 
-		}
-		
-		public void setVisited(boolean visited) {
-			this.visited = visited; 
-		}
-		
-		public LinkedList<Edge> getEdges() {
-			return adj; 
-		}
-		public double getIndegree () {
-			return adj.size(); 
 		}
 	}
 
@@ -169,93 +174,5 @@ public class Graph <Type>{
 		{
 			return this.dst.getData();
 		}
-		
-		public Vertex getOtherVertex() {
-			return this.dst; 
-		}
-	}
-	
-	public boolean isCyclic (Vertex source)
-	{
-		//get starting vertex
-		Vertex start = vertices.get(source);
-		
-		
-		//set up priority queue of vertices prioritized by smallest distance
-		PriorityQueue<Vertex> pq = new PriorityQueue<Vertex>(); 
-		
-		//for all vertices: set distance from start to INF
-		for(Vertex v: vertices.values())
-		{
-			v.setDistanceFromStart(Double.POSITIVE_INFINITY);
-		}
-		
-		start.setDistanceFromStart(0);
-		pq.offer(start); 
-		
-		//call depthFirstSearch 
-		return depthFirstSearch(start); 
-		
-		
-	}
-	
-	public boolean depthFirstSearch(Vertex x)
-	{
-		if (x.getVisted() == true)
-		{
-			return true; 
-		}
-		//mark x as visited
-		x.setVisited(true);
-		
-		//for each unvisited edge e from x do
-		for(Edge e: x.getEdges())
-		{
-			Vertex w = e.getDestinationVertex(); 
-			w.distanceFromStart = x.distanceFromStart + e.weight; 
-			w.prev = x; 
-			depthFirstSearch(w); 
-		}
-		return false; 
-	}
-	
-	public <Type> List<Type> topologicalSort(Graph myGraph)
-	{
-		//a new queue of vertices to visit
-		PriorityQueue<Vertex> pq = new PriorityQueue<Vertex>(); 
-		
-		//for each vi do
-		for (Vertex v : vertices.values())
-		{
-			if (v.indegree == 0)
-			{
-				pq.add(v);  
-			}
-		}
-		
-		//while queue is not empty do
-		while (!pq.isEmpty())
-		{
-			Vertex x = pq.remove(); 
-			
-			//x is next in sorted order
-			
-			//for each edge e from x do
-			for (Edge e : x.getEdges())
-			{
-				Vertex w = e.getDestinationVertex(); 
-				w.indegree = w.indegree - 1; 
-				if (w.indegree == 0)
-				{
-					pq.add(w); 
-				}
-			}
-		} 
-		List <Type> result = new ArrayList<>(); 
-		
-		result.addAll(pq); 
-		
-		return result; 
-		
 	}
 }
