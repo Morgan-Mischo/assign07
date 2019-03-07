@@ -1,8 +1,12 @@
+
 package assign07;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Queue;
 
 public class Graph <Type>{
@@ -69,7 +73,162 @@ public class Graph <Type>{
 		
 		return result.toString(); 
 	}
+	
+	private class Vertex 
+	{
+		private Type data; 
+		
+		private LinkedList<Edge> adj; 
+		public double distanceFromStart;
+		//distance
+		private double dist; 
+		
+		private Vertex prev; 
+		
+		private boolean visited; 
+		
+		private double indegree;
 
+		private Vertex next; 
+		
+		public Vertex (Type data)
+		{
+			this.data = data; 
+			this.adj = new LinkedList<Edge>(); 
+		}
+		
+		public Type getData ()
+		{
+			return data; 
+		}
+		
+		public void addEdge (Vertex otherVertex)
+		{
+			adj.add(new Edge(otherVertex)); 
+			otherVertex.indegree++; 
+		}
+		
+		public Iterator<Edge> edges() 
+		{
+			return adj.iterator(); 
+		}
+		public String toString ()
+		{
+			String s = data + ":"; 
+			Iterator<Edge> itr = this.edges(); 
+			while (itr.hasNext())
+			{
+				s += itr.next().getData() + " "; 
+			}
+			return s; 
+		}
+		public double getDistanceFromStart() {
+			return dist;
+		}
+
+		public void setDistanceFromStart(double dist) {
+			this.dist = dist;
+		}
+		
+		public Vertex getPrevious() {
+			return prev; 
+		}
+		public Vertex getNext() {
+			return next; 
+		}
+		public void setPrevious(Vertex prev) {
+			this.prev = prev; 
+		}
+		public void setNext() {
+			this.next = next; 
+		}
+		
+		public boolean getVisted() {
+			return visited; 
+		}
+		
+		public void setVisited(boolean visited) {
+			this.visited = visited; 
+		}
+		
+		public LinkedList<Edge> getEdges() {
+			return adj; 
+		}
+		public double getIndegree () {
+			return indegree; 
+		}
+	}
+
+	private class Edge
+	{
+		private boolean visited; 
+		
+		private Vertex dst; 
+		
+		public Edge(Vertex dst)
+		{
+			this.dst = dst; 
+		}
+		
+		public Vertex getDestinationVertex()
+		{
+			return this.dst;
+		}
+		
+		public Type getData()
+		{
+			return this.dst.getData();
+		}
+		
+		public Vertex getOtherVertex() {
+			return this.dst; 
+		}
+		public boolean getVisted() {
+			return visited; 
+		}
+		
+		public void setVisited(boolean visited) {
+			this.visited = visited; 
+		}
+	}
+	
+	public boolean isCyclic()
+	{
+		boolean a = false; 
+		//for all vertices: set distance from start to INF
+		for(Vertex v: vertices.values())
+		{
+			this.reset(v);
+			a = depthFirstSearch(v); 
+		}
+		return a; 
+	}
+	public void reset (Vertex x) {
+		x.setDistanceFromStart(Double.POSITIVE_INFINITY);
+		x.setVisited(false);	
+	}
+	
+	public boolean depthFirstSearch(Vertex x)
+	{
+		x.setVisited(true); 
+
+		//for each unvisited edge e from x do
+		for(Edge e: x.getEdges())
+		{
+			if(e.getDestinationVertex().getVisted() == false) {
+				Vertex w = e.getDestinationVertex();
+				w.prev = x; 
+				e.setVisited(true);
+				depthFirstSearch(w); 
+			}
+			else if (e.getDestinationVertex().getVisted() == true)
+				{
+					return true; 
+				}
+		}
+		return false; 	
+	}
+	
 	public boolean areConnected(Type srcData, Type dstData)
 	{
 		Vertex s = vertices.get(srcData);
@@ -94,7 +253,7 @@ public class Graph <Type>{
 				if(w.distanceFromStart == Double.POSITIVE_INFINITY)
 				{
 					w.distanceFromStart = x.distanceFromStart + 1;
-					w.setPrev(x);
+					w.setPrevious(x);
 					myQueue.offer(w);
 				}
 				if(w.getData() == dstData)
@@ -104,75 +263,42 @@ public class Graph <Type>{
 		return false;
 	}
 	
-	private class Vertex 
+	@SuppressWarnings("unchecked")
+	public <Type> List<Type> topologicalSort()
 	{
-		private Vertex prev;
-
-		private Type data; 
+		//a new queue of vertices to visit
+		Queue<Vertex> pq = new LinkedList<Vertex>(); 
+		List<Type> result = new LinkedList<Type>();
 		
-		private LinkedList<Edge> adj; 
-		public double distanceFromStart;
-		
-		public Vertex (Type data)
+		//for each vi do
+		for (Vertex v : vertices.values())
 		{
-			this.data = data; 
-			this.adj = new LinkedList<Edge>(); 
-		}
-		
-		public Type getData ()
-		{
-			return data; 
-		}
-		
-		public Vertex getPrev() 
-		{
-			return prev;
-		}
-
-		public void setPrev(Vertex prev) 
-		{
-			this.prev = prev;
-		}
-
-		public void addEdge (Vertex otherVertex)
-		{
-			adj.add(new Edge(otherVertex)); 
-		}
-		
-		public Iterator<Edge> edges() 
-		{
-			return adj.iterator(); 
-		}
-		
-		public String toString ()
-		{
-			String s = "Vertex " + data + " adjacent to vertices "; 
-			Iterator<Edge> itr = this.edges(); 
-			while (itr.hasNext())
+			if (v.indegree == 0)
 			{
-				s += itr.next().getData() + " "; 
+				pq.offer(v); 
+				result.add((Type) v.getData()); 
 			}
-			return s; 
 		}
-	}
+		
+		//while queue is not empty do
+		while (!pq.isEmpty())
+		{
+			Vertex x = pq.poll(); 
+			
+			//x is next in sorted order
 
-	private class Edge
-	{
-		private Vertex dst; 
-		
-		public Edge(Vertex dst)
-		{
-			this.dst = dst; 
-		}
-		
-		public Vertex getDestinationVertex()
-		{
-			return this.dst;
-		}
-		
-		public Type getData()
-		{
-			return this.dst.getData();
-		}
+			//for each edge e from x do
+			for (Edge e : x.getEdges())
+			{
+				Vertex w = e.getDestinationVertex(); 
+				w.indegree = w.indegree - 1; 
+				if (w.indegree == 0)
+				{
+					result.add((Type) w.getData()); 
+					pq.offer(w); 
+				}
+			}
+		} 
+		return result;
 	}
 }
