@@ -1,13 +1,14 @@
-
 package assign07;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.PriorityQueue;
 import java.util.Scanner;
+
 
 /**
  * Contains several methods for solving problems on generic, directed,
@@ -18,34 +19,70 @@ import java.util.Scanner;
  */
 public class GraphUtility {
 
+	/**
+	 * This method must use the depth-first search algorithm presented in 
+	 * lecture to determine whether the graph contains a cycle.
+	 * @param sources
+	 * @param destinations
+	 * @return
+	 * @throws IllegalArgumentException
+	 */
 	public static <Type> boolean isCyclic(List<Type> sources, List<Type> destinations) throws IllegalArgumentException {
-		
-		//Create a graph of sources and destinations
-		Graph <Type> myGraph = new Graph<>(); 
-		Vertex source = (Vertex) sources.get(0); 
-		for(int i = 0; i < sources.size(); i++)
-		{
-			myGraph.addEdge(sources.get(i), destinations.get(i)); 
-		}
-		return Graph.isCyclic(source); 
-		
-	}
-
-	public static <Type> boolean areConnected(List<Type> sources, List<Type> destinations, Type srcData, Type dstData)
-			throws IllegalArgumentException {
 		// FILL IN + ADD METHOD COMMENT
 		return false;
 	}
 
-	public static <Type> List<Type> sort(List<Type> sources, List<Type> destinations) throws IllegalArgumentException {
-		Graph <Type> myGraph = new Graph<>(); 
-		for(int i = 0; i <sources.size(); i++)
+	/**
+	 * This method must use the breadth-first search algorithm presented in lecture to determine 
+	 * whether there is a path from the vertex with srcData to the vertex with dstData in the graph.  
+	 * Throws an IllegalArgumentException if there does not exist a vertex in the graph with srcData, and likewise for dstData.
+	 * @param sources
+	 * @param destinations
+	 * @param srcData
+	 * @param dstData
+	 * @return
+	 * @throws IllegalArgumentException
+	 */
+	public static <Type> boolean areConnected(List<Type> sources, List<Type> destinations, Type srcData, Type dstData) 
+			throws IllegalArgumentException {
+		//Throw if number of elements doesn't match
+		if (sources.size() != destinations.size())
+		{
+			throw new IllegalArgumentException(); 
+		}
+		
+		//Throw if srcData or dstData does not exist in graph
+		if (!sources.contains(srcData) || !destinations.contains(dstData))
+			throw new IllegalArgumentException();
+		
+		Graph<Type> myGraph = new Graph<Type>();
+		for(int i = 0; i < sources.size(); i ++)
 		{
 			myGraph.addEdge(sources.get(i), destinations.get(i));
 		}
-		List<Type> result = new ArrayList<Type> (); 
-		result = Graph.topologicalSort(myGraph); 
-		return result; 
+		
+		return myGraph.areConnected(srcData, dstData);
+	}
+
+	/** This method must use the topographical sort algorithm presented in lecture to generate a sorted
+	 *  ordering of the vertices in the graph.  Note that a graph may have more than one valid ordering, 
+	 *  and any such ordering is accepted.  Throws an IllegalArgumentException if the graph contains a cycle 
+	 *  (recall topological sort works only on acyclic graphs).
+	 * @param sources
+	 * @param destinations
+	 * @return
+	 * @throws IllegalArgumentException
+	 */
+
+	public static <Type> List<Type> sort(List<Type> sources, List<Type> destinations) throws IllegalArgumentException {
+
+		if (isCyclic(sources, destinations) == true)
+		{
+			throw new IllegalArgumentException (); 
+		}
+
+		// FILL IN + ADD METHOD COMMENT
+		return null;
 	}
 
 	/**
@@ -134,4 +171,7 @@ public class GraphUtility {
 
 		scan.close();
 	}
+
+
+
 }
