@@ -38,11 +38,12 @@ public class GraphUtility {
 		{
 			throw new IllegalArgumentException(); 
 		}
+
 		
-		//Throw if srcData or dstData does not exist in graph
-		if (srcData == null || !sources.contains(srcData) || dstData == null ||!destinations.contains(dstData))
-			throw new IllegalArgumentException();
-		
+		if(srcData == null || dstData == null)
+		{
+			throw new IllegalArgumentException(); 
+		}
 		Graph<Type> myGraph = new Graph<Type>();
 		for(int i = 0; i < sources.size(); i ++)
 		{

@@ -229,9 +229,15 @@ public class Graph <Type>{
 		return false; 	
 	}
 	
-	public boolean areConnected(Type srcData, Type dstData)
+	public boolean areConnected(Type srcData, Type dstData) throws IllegalArgumentException
 	{
 		Vertex s = vertices.get(srcData);
+		
+		if (s == null || vertices.get(dstData) == null)
+		{
+			throw new IllegalArgumentException(); 
+		}
+		
 		
 		for(Vertex v : vertices.values())
 		{
