@@ -8,21 +8,29 @@ public class topologicalSort_SortTimer {
 
 	public static <E> void main (String[] args) {
 
-		final int timesToLoop = 10000; 
+		final int problemSize = 100000;
+		final int TIMES_TO_LOOP = 1000;
+		
+		Random rng = new Random();
 
-		List<Double> iList1 = new ArrayList<>(); 
-		List<Double> iList2 = new ArrayList<>(); 
+		List<String> iList1 = new ArrayList<>(); 
+		List<String> iList2 = new ArrayList<>(); 
 
-		for (int n = 1000; n <= timesToLoop; n += 1000)
+		for (int i = 10000; i <= problemSize; i += 10000)
 		{
-			iList1.add((double) n / 2);  
-			iList2.add((double) (n));
+			iList1.clear();
+			iList2.clear();
 			
-			Integer srcData = n; 
-			Integer dstData = n; 
+			for (int j = 0; j < i; j++)
+			{
+				iList1.add("v" + j);  
+				iList2.add("v" + rng.nextInt(i));
+			}
+			
+			String srcData = "v" + rng.nextInt(i); 
+			String dstData = "v" + rng.nextInt(i);; 
 
-			long startTime, midpointTime, stopTime;
-
+			long startTime, midpointTime, stopTime = System.nanoTime();
 
 			// First, spin computing stuff until one second has gone by.
 			// This allows this thread to stabilize.
@@ -35,7 +43,7 @@ public class topologicalSort_SortTimer {
 			startTime = System.nanoTime();
 
 
-			for (int i = 1000; i <= timesToLoop; i += 10)
+			for (int j = 0; j <= TIMES_TO_LOOP; j++)
 			{
 				GraphUtility.isCyclic(iList1, iList2); 
 			}
@@ -44,7 +52,7 @@ public class topologicalSort_SortTimer {
 
 			// Run a loop to capture the cost of running the "timesToLoop" loop and
 			// generating a random ISBN.
-			for (int i = 0; i < timesToLoop; i++) {
+			for (int j = 0; j <= TIMES_TO_LOOP; j++) {
 
 			}
 			stopTime = System.nanoTime();
@@ -52,9 +60,9 @@ public class topologicalSort_SortTimer {
 			// Compute the time, subtract the cost of running the loop
 			// from the cost of running the loop and doing the lookups.
 			// Average it over the number of runs.
-			double averageTime = ((midpointTime - startTime) - (stopTime - midpointTime))
-					/ (double) timesToLoop;
-			System.out.println(n + "\t" + averageTime);
+			double averageTime = (double) ((midpointTime - startTime) - (stopTime - midpointTime))
+					/ TIMES_TO_LOOP;
+			System.out.println(i + "\t" + averageTime);
 		}
 
 	}
